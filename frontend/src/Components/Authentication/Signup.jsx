@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { data } from "autoprefixer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { addDetails } from "../../features/authSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -47,17 +47,10 @@ export default function SignUp() {
     axios
       .post("/post-signup", formData)
       .then((res) => {
-        console.log(res.data.message);
-        userDetails1 = {
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          email: formData.email,
-        };
-        console.log(userDetails1);
-        dispatch(addDetails(userDetails1));
-        navigateTo("/");
+       window.alert("User Created. You can now Login!!");
+        // sessionStorage.setItem("cachedUser",JSON.stringify(userDetails1));//caching the userdetails
+        navigateTo("/login");
         // resetFormData();
-       
       })
       .catch((err) => {
         window.alert(`Error(s):-\n${err.response.data.message}`);

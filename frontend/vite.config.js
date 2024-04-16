@@ -7,7 +7,9 @@ export default defineConfig ({
   server:{
     proxy:{
       '/post-signup':'http://localhost:3000',
-      '/post-login':'http://localhost:3000'
+      '/post-login':'http://localhost:3000',
+      '/create-post-server':'http://localhost:3000',
+      '/api/public-posts':'http://localhost:3000'
     }
   }
 })

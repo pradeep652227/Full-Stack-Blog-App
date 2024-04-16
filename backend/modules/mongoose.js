@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 
 /*setting mongoose and database*/
+const blogPostSchema=new mongoose.Schema({
+    title:String,
+    content:String,
+    isPrivate:Boolean,
+    userEmail:String,
+    image:String,
+    imgURLPrefix:String
+})
 const blogUsersSchema = new mongoose.Schema({
     first_name: { type: String, required: [true, "First Name is required!"] },
     last_name: { type: String, required: [true, "Last Name is required!"] },
@@ -10,9 +18,11 @@ const blogUsersSchema = new mongoose.Schema({
       minLength: [8, "Minimum 08 characters are required!!"],
     },
     email: { type: String, required: [true, "Email Address is required"], unique: true },
+    posts:[{}]
   });
   
   //collection created
+const blogPost=new mongoose.model("blogPost",blogPostSchema);
 const blogUser = new mongoose.model("BlogUser", blogUsersSchema);
 
 main().catch((err) => console.log(err));
@@ -21,4 +31,4 @@ async function main() {
 }
 /*Completed Mongoose setup*/
 
-export {blogUser};
+export {blogUser,blogPost};

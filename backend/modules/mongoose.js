@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
 /*setting mongoose and database*/
 const blogPostSchema=new mongoose.Schema({
@@ -27,7 +29,8 @@ const blogUser = new mongoose.model("BlogUser", blogUsersSchema);
 
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/blogUsersDB");
+  // await mongoose.connect("mongodb://127.0.0.1:27017/blogUsersDB");
+  await mongoose.connect(process.env.DATABASE_CONNECTION_URL);
 }
 /*Completed Mongoose setup*/
 

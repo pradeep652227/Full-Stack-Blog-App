@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-dotenv.config({path:"../.env"});
+// import dotenv from "dotenv";
+// dotenv.config({path:"../.env"});
 
 /*setting mongoose and database*/
 const blogPostSchema=new mongoose.Schema({

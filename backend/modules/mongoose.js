@@ -17,7 +17,7 @@ const blogUsersSchema = new mongoose.Schema({
     password: {
       type: String,
       required: [true, "Password is required!"],
-      minLength: [8, "Minimum 08 characters are required!!"],
+      minlength: [8, "Minimum 08 characters are required!!"],
     },
     email: { type: String, required: [true, "Email Address is required"], unique: true },
     posts:[{}]

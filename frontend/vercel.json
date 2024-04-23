@@ -7,11 +7,11 @@
       {
         "source": "/post-login",
         "destination": "https://blog-app-backend-tau.vercel.app/post-signup"
-      }
+      },
       {
         "source": "/api/public-posts",
         "destination": "https://blog-app-backend-tau.vercel.app/api/public-posts"
-      }
+      },
       {
         "source": "/create-post-server",
         "destination": "https://blog-app-backend-tau.vercel.app/create-post-server"

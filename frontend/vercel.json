@@ -6,7 +6,7 @@
       },
       {
         "source": "/post-login",
-        "destination": "https://blog-app-backend-tau.vercel.app/post-signup"
+        "destination": "https://blog-app-backend-tau.vercel.app/post-login"
       },
       {
         "source": "/api/public-posts",

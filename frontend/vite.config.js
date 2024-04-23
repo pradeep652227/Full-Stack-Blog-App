@@ -12,10 +12,10 @@ export default defineConfig ({
     //   '/api/public-posts':'http://localhost:3000'
     // }
     proxy:{
-      '/post-signup':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app/',
-      '/post-login':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app/',
-      '/create-post-server':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app/',
-      '/api/public-posts':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app/'
+      '/post-signup':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app',
+      '/post-login':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app',
+      '/create-post-server':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app',
+      '/api/public-posts':'https://blog-app-backend-pradeep-gaurs-projects.vercel.app'
     }
   }
 })

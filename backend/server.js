@@ -189,7 +189,9 @@ app.get("/api/public-posts", (req, res) => {
       res.status(500).json({ message: "No Public Posts in the Database!!" })
     );
 });
+app.get("/",(res,req)=>{
+  res.send("Hi");
+})
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  res.send("Hi");
 });

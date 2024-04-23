@@ -16,13 +16,13 @@ import * as Components from "./imports/component-imports";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Components.Layout />}>
-      <Route path="/" element={<Components.Home />} />
-      <Route path="/login" element={<Components.Login />} />
-      <Route path="/signup" element={<Components.SignUp />} />
-      <Route path="/create-post" element={<Components.CreatePost />} />
-      <Route path="/posts" element={<Components.Home />} />
-      <Route path="/posts/public/:postId" element={<Components.BlogPostPublic />} />
-      <Route path="/posts/private/:postId" element={<Components.BlogPostPrivate />} />
+      <Route path="" element={<Components.Home />} />
+      <Route path="login" element={<Components.Login />} />
+      <Route path="signup" element={<Components.SignUp />} />
+      <Route path="create-post" element={<Components.CreatePost />} />
+      <Route path="posts" element={<Components.Home />} />
+      <Route path="posts/public/:postId" element={<Components.BlogPostPublic />} />
+      <Route path="posts/private/:postId" element={<Components.BlogPostPrivate />} />
     </Route>
   )
 );

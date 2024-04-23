@@ -190,9 +190,9 @@ app.get("/api/public-posts", (req, res) => {
     );
 });
 
-app.get("/",(req,res)=>{
-  res.send("Hi");
-})
+// app.get("/",(req,res)=>{
+//   res.send("Hi");
+// })
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

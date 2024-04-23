@@ -7,7 +7,7 @@ const blogPostSchema=new mongoose.Schema({
     title:String,
     content:String,
     isPrivate:Boolean,
-    userEmail:String,
+    userEmail:String, 
     image:String,
     imgURLPrefix:String
 })

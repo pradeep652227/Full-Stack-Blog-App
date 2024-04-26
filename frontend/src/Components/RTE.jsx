@@ -4,6 +4,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Controller } from "react-hook-form";
 
 export default function RTE({ name, label, defaultValue = "", control }) {
+  console.log(String(import.meta.env.VITE_TINYMCE_URL));
   return (
     <div className="w-full">
       {label && <label className="block mb-1">{label}</label>}
@@ -13,7 +14,7 @@ export default function RTE({ name, label, defaultValue = "", control }) {
         render={({ field: { onChange } }) => (
           <Editor
             initialValue={defaultValue}
-            apiKey="0ru1capyxx25rtidgaqnyl6u7w1vqbp3ztztopezy4ngc2kh"
+            apiKey={String(import.meta.env.VITE_TINYMCE_URL)}
             init={{
               initialValue: defaultValue,
               height: 500,

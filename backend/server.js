@@ -286,9 +286,9 @@ app.get("/api/posts/:userId", (req, res) => {
     });
 });
 
-// app.get("/",(req,res)=>{
-//   res.send("Hi");
-// })
+app.get("/",(req,res)=>{
+  res.send(process.env.TESTING);
+})
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

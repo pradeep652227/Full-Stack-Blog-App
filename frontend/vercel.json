@@ -2,19 +2,19 @@
     "rewrites": [
       {
         "source": "/post-signup",
-        "destination": "https://blog-app-backend-tau.vercel.app/post-signup"
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/post-signup"
       },
       {
         "source": "/post-login",
-        "destination": "https://blog-app-backend-tau.vercel.app/post-login"
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/post-login"
       },
       {
         "source": "/api/public-posts",
-        "destination": "https://blog-app-backend-tau.vercel.app/api/public-posts"
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/api/public-posts"
       },
       {
         "source": "/server-create-post",
-        "destination": "https://blog-app-backend-tau.vercel.app/create-post-server"
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/create-post-server"
       }
     ]
   }

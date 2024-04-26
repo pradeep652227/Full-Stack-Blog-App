@@ -12,17 +12,18 @@ import {
 } from "react-router-dom";
 
 import * as Components from "./imports/component-imports";
+import AuthLayout from "./Components/AuthLayout";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Components.Layout />}>
+    <Route path="/" element={<AuthLayout><Components.Layout /></AuthLayout>}>
       <Route path="" element={<Components.Home />} />
       <Route path="login" element={<Components.Login />} />
       <Route path="signup" element={<Components.SignUp />} />
-      <Route path="create-post" element={<Components.CreatePost />} />
+      <Route path="create-post" element={<Components.PostForm />} />
       <Route path="posts" element={<Components.Home />} />
-      <Route path="posts/public/:postId" element={<Components.BlogPostPublic />} />
-      <Route path="posts/private/:postId" element={<Components.BlogPostPrivate />} />
+      <Route path="posts/:slug" element={<AuthLayout><Components.BlogPostPublic /></AuthLayout>} />
+      <Route path="edit-post/:slug" element={<Components.EditPost />} />
     </Route>
   )
 );

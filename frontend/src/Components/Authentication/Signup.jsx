@@ -31,7 +31,7 @@ export default function SignUp() {
     const { name: inputName, value: inputVal } = e.target;
     setFormData((prevVal) => ({ ...prevVal, [inputName]: inputVal }));
   }
-  let userDetails1;
+  
   function handleClick(e) {
     e.preventDefault();
     // const target = e.target;
@@ -47,9 +47,12 @@ export default function SignUp() {
     axios
       .post("/post-signup", formData)
       .then((res) => {
-       window.alert("User Created. You can now Login!!");
-        // sessionStorage.setItem("cachedUser",JSON.stringify(userDetails1));//caching the userdetails
-        navigateTo("/login");
+        console.log("User Registererd with details:-");
+        console.log(res);
+        res && sessionStorage.setItem("cachedUser",JSON.stringify(res.data));//caching the userdetails
+        dispatch(addDetails(res.data));
+        sessionStorage.removeItem("cachedPosts");//removing the public posts cache
+        navigateTo("/");
         // resetFormData();
       })
       .catch((err) => {

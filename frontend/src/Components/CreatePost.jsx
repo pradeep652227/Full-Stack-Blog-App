@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { addPosts } from "../features/postsSlice";
-import { addDetails } from "../features/authSlice";
+import { useSelector,useDispatch } from "react-redux";
+import { clearPosts } from "../features/postsSlice";
 
 export default function CreatePost() {
   const [postData, setPostData] = useState({
@@ -12,9 +11,9 @@ export default function CreatePost() {
     content: "",
   });
   const navigateTo = useNavigate();
-  const userDetails = useSelector((state) => state.auth.userDetails);
-  const publicPosts = useSelector((state) => state.posts.posts);
-  const dispatch = useDispatch();
+  const isLoggedIn=useSelector(state=>state.auth.isLoggedIn);
+  const userDetails=useSelector(state=>state.auth.userDetails);
+  const dispatch=useDispatch();
 
   function handleChange(e) {
     const { name: field, value } = e.target;
@@ -25,45 +24,28 @@ export default function CreatePost() {
   }
 
   function handleSubmit(e) {
-    const cachedUser = JSON.parse(sessionStorage.getItem("cachedUser"));
+    // const cachedUser = JSON.parse(sessionStorage.getItem("cachedUser"));
     e.preventDefault();
     let formData = new FormData();
 
     formData.append("title", postData.title);
     formData.append("image", postData.image);
     formData.append("content", postData.content);
-    formData.append("isPrivate", cachedUser?.isLoggedIn ? "true" : "false"); //if logged then private post else public post
-    formData.append("userEmail", cachedUser ? cachedUser.email : "");
-    console.log(cachedUser?.isLoggedIn ? true : false);
+    formData.append("isPrivate", isLoggedIn? "true" : "false"); //if logged then private post else public post
+    formData.append("userId", isLoggedIn? userDetails.id : "");
+    formData.append("userName", isLoggedIn? (userDetails.first_name+" "+userDetails.last_name) : "Anonymous");
+    
     axios
-      .post("/create-post-server", formData, {
+      .post("/server-create-post", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
       .then((res) => {
         console.log(res);
-        if (!res.data.isPublicPost) {
-          //private post
-          sessionStorage.setItem("cachedUser", JSON.stringify(res.data.user));
-          dispatch(addDetails(res.data.user));
-          console.log("Added cached User");
-        } else {
-          //create a public post
-          let newPost = res.data.post;
-          //if cachedPosts exists then push the new post
-          const cachedPosts = JSON.parse(sessionStorage.getItem("cachedPosts"));
-          if (cachedPosts) {
-            let newPosts = [...cachedPosts, newPost];
-            console.log(newPosts);
-            sessionStorage.setItem("cachedPosts", JSON.stringify(newPosts));
-            let newPosts1 = [...publicPosts, newPost];
-            console.log(newPosts1);
-            dispatch(addPosts(newPosts1));
-          }
-          //else cachedPosts and publicPosts both are empty so leave them and navigate to home route to get the new posts
-        }
-        window.alert("Post Added");
+        window.alert(res.data);
+        sessionStorage.removeItem("cachedPosts");//clear the session cache
+        dispatch(clearPosts());
         navigateTo("/");
         //
       })

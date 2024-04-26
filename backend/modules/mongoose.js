@@ -5,11 +5,14 @@ dotenv.config({path:"../.env"});
 /*setting mongoose and database*/
 const blogPostSchema=new mongoose.Schema({
     title:String,
+    slug:String,
     content:String,
     isPrivate:Boolean,
-    userEmail:String, 
+    userId:String,
+    userName:String, 
     image:String,
-    imgURLPrefix:String
+    imgURLPrefix:String,
+    
 })
 const blogUsersSchema = new mongoose.Schema({
     first_name: { type: String, required: [true, "First Name is required!"] },
@@ -17,10 +20,10 @@ const blogUsersSchema = new mongoose.Schema({
     password: {
       type: String,
       required: [true, "Password is required!"],
-      minlength: [8, "Minimum 08 characters are required!!"],
+      minLength: [8, "Minimum 08 characters are required!!"],
     },
     email: { type: String, required: [true, "Email Address is required"], unique: true },
-    posts:[{}]
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'blogPost' }]
   });
   
   //collection created

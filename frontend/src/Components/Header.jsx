@@ -1,5 +1,8 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import LogoutBtn from "./LogoutBtn";
+import { useSelector } from "react-redux";
+
 export default function Header() {
   let logoStyles = {
     width: "40px",
@@ -8,6 +11,35 @@ export default function Header() {
   let nav_linkClasses =
     "inline-block text-xl border border-1 rounded-full border-transparent hover:border-inherit hover:bg-gray-100 duration-200 p-2 box-border";
 
+ const authStatus=useSelector(state=>state.auth.isLoggedIn);
+
+  const items = [
+    {
+      name: "Home",
+      toShow: true,
+      slug: "/",
+    },
+    {
+      name: "Login",
+      toShow: !authStatus,
+      slug: "/login",
+    },
+    {
+      name: "Signup",
+      toShow: !authStatus,
+      slug: "/signup",
+    },
+    {
+      name: "All Posts",
+      toShow: authStatus,
+      slug: "/posts",
+    },
+    {
+      name: "Create Post",
+      toShow: authStatus,
+      slug: "/create-post",
+    },
+  ];
   return (
     <header id="main_header" className="bg-gray-400">
       <div
@@ -23,21 +55,23 @@ export default function Header() {
         </div>
         <div className="">
           <ul className="flex flex-wrap space-x-4">
-            <li className="">
-              <NavLink className={({isActive})=>`${nav_linkClasses} ${isActive?'text-gray-100':''}`} to="/">
-                Home
-              </NavLink>
-            </li>
-            <li className="">
-              <NavLink className={({isActive})=>`${nav_linkClasses} ${isActive?'text-gray-100':''}`} to="/login">
-                Login
-              </NavLink>
-            </li>
-            <li className="">
-              <NavLink className={({isActive})=>`${nav_linkClasses} ${isActive?'text-gray-100':''}`} to="/signup">
-                Signup
-              </NavLink>
-            </li>
+            {items.map((item) => {
+              return item.toShow ? (
+                <li key={item.name} className="">
+                  <NavLink
+                    className={({ isActive }) =>
+                      `${nav_linkClasses} ${isActive ? "text-gray-100" : ""}`
+                    }
+                    to={item.slug}
+                  >
+                    {item.name}
+                  </NavLink>
+                </li>
+              ) : (
+                ""
+              );
+            })}
+            {authStatus && <LogoutBtn className="bg-gray-400" />}
           </ul>
         </div>
       </div>

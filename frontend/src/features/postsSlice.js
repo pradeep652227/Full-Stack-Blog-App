@@ -1,8 +1,7 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 const initialState = {
-  posts: [],
-  imgURLPrefix:""
+  posts: []
 };
 
 export const postsSlice = createSlice({
@@ -12,12 +11,15 @@ export const postsSlice = createSlice({
     addPosts: (state, action) => {
       state.posts=action.payload;
     },
-    addImgURLPrefix:(state,action)=>{
-      state.imgURLPrefix=action.payload;
+    clearPosts:(state)=>{
+      state.posts=[];
+    },
+    clearPrivatePosts:(state)=>{
+      state.posts=state.posts.filter(post=>post.userId === "");
     }
   },
 });
 
-export const { addPosts,addImgURLPrefix } = postsSlice.actions;
+export const { addPosts,clearPrivatePosts,clearPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

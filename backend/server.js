@@ -5,11 +5,11 @@ import multer from "multer";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import generateUniqueID from "./modules/generateUniqueID.js";
+import fs from "fs";
 
 // Multer configuration for handling file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log(file);
     cb(null, "uploads/"); // Destination folder for storing uploaded files
   },
   filename: function (req, file, cb) {
@@ -34,42 +34,77 @@ app.use(express.json()); //parsing JSON (stringified) objects in the request bod
 
 /*POST requests*/
 
-app.post("/create-post-server", upload.single("image"), (req, res) => {
+app.post("/update-post", upload.single("image"), (req, res) => {
+  console.log("upload Post:-");
+  const postObj = { ...req.body };
+  console.log(postObj);
+
+  if (req.body.image !== "undefined") {
+    //delete the old image
+    const oldImage = postObj.oldImage;
+    const imagePath = "./uploads/" + oldImage;
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.log("Error in deleting the old image");
+        console.log(err);
+      } else console.log("Deleted the old Image");
+    });
+  }
+  let updatedFields = {
+    title: req.body.title,
+    slug: req.body.slug,
+    content: req.body.content,
+    isPrivate: req.body.isPrivate,
+  };
+  if (req.body.image !== "undefined") {
+    updatedFields["image"] = req.file.filename;
+  }
+
+  //Update the document
+  console.log(updatedFields);
+  blogPost
+    .updateOne(
+      { _id: postObj.postId },
+      {
+        $set: updatedFields,
+      },
+      { new: true }
+    )
+    .then((newPost) => {
+      console.log(newPost);
+      res.send(true);
+    })
+    .catch((err) => {
+      console.log("Error in Updating Post");
+      console.log(err);
+      res.send(false);
+    });
+});
+app.post("/server-create-post", upload.single("image"), (req, res) => {
   //adding a blog-post
   //upload.single(name attribute)
   let url = req.protocol + "://" + req.get("host");
   url += "/uploads/";
+  let postData = req.body;
   let post = {
     //creating a post object
-    title: req.body.title,
-    content: req.body.content,
-    userEmail: req.body.userEmail,
-    isPrivate: req.body.isPrivate,
+    ...postData,
     image: req.file.filename,
-    imgURLPrefix:url
+    imgURLPrefix: url,
   };
   console.log(post);
-  if (post.isPrivate === "true") {
+  if (post.userId) {
     //save the post to the user
     console.log("Inside true block");
     blogUser
-      .findOne({ email: post.userEmail })
+      .findOne({ _id: post.userId })
       .then((user) => {
         //found the user
-        post["_id"] = generateUniqueID();
-        user.posts.push(post);
-        user.save();
-        let sendData = {
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          _id: user._id,
-          isLoggedIn: true,
-          posts: user.posts,
-        };
-        res
-          .status(200)
-          .json({ user: sendData, isPublicPost: false});
+        blogPost.create(post).then((newPost) => {
+          user.posts.push(newPost);
+          user.save();
+          res.send("Post added to the User");
+        });
       })
       .catch((err) =>
         res
@@ -82,11 +117,7 @@ app.post("/create-post-server", upload.single("image"), (req, res) => {
     blogPost
       .create(post)
       .then((result) => {
-        res.status(200).json({
-          message: "Post saved Public!!",
-          isPublicPost: true,
-          post: result
-        });
+        res.send("Post Added Public!!");
       })
       .catch((err) => {
         console.log(err);
@@ -112,8 +143,14 @@ app.post("/post-signup", (req, res) => {
     newUser["password"] = hash;
     newUser
       .save()
-      .then((result) => {
-        res.status(200).send({ message: "User successfully saved." });
+      .then((user) => {
+        let sendData = {
+          first_name: user.first_name,
+          last_name: user.last_name,
+          id: user._id, //will be needed when selecting private posts
+        };
+        res.send(sendData);
+        // res.status(200).send({ message: "User successfully saved." });
       })
       .catch((err) => {
         if (err.code === 11000) {
@@ -147,10 +184,7 @@ app.post("/post-login", (req, res) => {
         let sendData = {
           first_name: user.first_name,
           last_name: user.last_name,
-          email: user.email,
-          _id: user._id,
-          isLoggedIn: true,
-          posts: user.posts,
+          id: user._id,
         };
         bcrypt
           .compare(incomingData.password, user.password) //compare the incoming password (hash it) with the stored password
@@ -174,20 +208,82 @@ app.post("/post-login", (req, res) => {
 });
 
 /*GET Requests */
-app.get("/api/public-posts", (req, res) => {
-  //get all the public posts
-  let url = req.protocol + "://" + req.get("host");
-  url += "/uploads/";
+app.get("/api/delete-post/:postId", (req, res) => {
+  const postId = req.params.postId;
+  console.log("Delete Post Route with postId:-" + postId);
+  let userId = 0;
+
+  //delete the file first
   blogPost
-    .find({})
-    .then((posts) => {
-      res.status(200).json({
-        posts: posts
+    .findOne({ _id: postId })
+    .then((post) => {
+      let imagePath = "./uploads/" + post.image;
+      userId = post.userId;
+
+      fs.unlink(imagePath, (err) => {
+        //delete the file
+        if (err) {
+          console.log("Error in Deleting the Image");
+          console.log(err);
+        } else console.log("image deleted");
+        //delete the post
+        let isPrivate = post.isPrivate;
+        console.log("isPrivate= " + isPrivate);
+        if (!isPrivate) {
+          //public post
+          blogPost
+            .deleteOne({ _id: postId })
+            .then(() => res.send(true))
+            .catch((err) => {
+              console.log("error in deleting the PUBLIC POST");
+              console.log(err);
+              res.status(500).send(false);
+            });
+        } else {
+          //privae post
+          blogPost
+            .deleteOne({ _id: postId })
+            .then(() => {
+              // After deleting the post from the blog collection, remove its reference from the user collection
+              return blogUser.updateMany(
+                { posts: postId },
+                { $pull: { posts: postId } }
+              );
+            })
+            .then(() => {
+              console.log("Post deleted from both collections.");
+              res.send(true);
+            })
+            .catch((err) => {
+              console.error("Error deleting post:", err);
+              res.status(500).send(false);
+            });
+        }
       });
     })
-    .catch((err) =>
-      res.status(500).json({ message: "No Public Posts in the Database!!" })
-    );
+    .catch((err) => {
+      //last catch
+      console.log("Error in Finding the Blog Post");
+      console.log(err);
+      res.status(500).send(false);
+    });
+});
+app.get("/api/posts/:userId", (req, res) => {
+  const userId = req.params.userId;
+
+  if (userId === null) userId = 0;
+  blogPost
+    .find({
+      $or: [{ isPrivate: false }, { isPrivate: true, userId: userId }],
+    })
+    .then((posts) => {
+      res.send(posts);
+    })
+    .catch((err) => {
+      console.log("");
+      console.log(err);
+      res.status(500).json({ message: "Error in Finding Posts!!" });
+    });
 });
 
 // app.get("/",(req,res)=>{

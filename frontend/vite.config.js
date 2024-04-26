@@ -5,18 +5,21 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig ({
   server:{
-    // proxy:{
-    //   '/post-signup':'http://localhost:3000',
-    //   '/post-login':'http://localhost:3000',
-    //   '/create-post-server':'http://localhost:3000',
-    //   '/api/public-posts':'http://localhost:3000'
-    // }
     proxy:{
-      '/post-signup':'https://blog-app-backend-tau.vercel.app',
-      '/post-login':'https://blog-app-backend-tau.vercel.app',
-      '/create-post-server':'https://blog-app-backend-tau.vercel.app',
-      '/api/public-posts':'https://blog-app-backend-tau.vercel.app'
+      '/post-signup':'http://localhost:3000',
+      '/post-login':'http://localhost:3000',
+      '/server-create-post':'http://localhost:3000',
+      '/update-post':'http://localhost:3000',
+      '/api/posts/':'http://localhost:3000',
+      '/api/delete-post/':'http://localhost:3000',
+      '/api/delete-image/':'http://localhost:3000'
     }
+    // proxy:{
+    //   '/post-signup':'https://blog-app-backend-tau.vercel.app',
+    //   '/post-login':'https://blog-app-backend-tau.vercel.app',
+    //   '/create-post-server':'https://blog-app-backend-tau.vercel.app',
+    //   '/api/public-posts':'https://blog-app-backend-tau.vercel.app'
+    // }
   }
 })
 // vite.config.js

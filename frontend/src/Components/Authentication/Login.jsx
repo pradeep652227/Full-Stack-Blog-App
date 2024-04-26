@@ -10,11 +10,11 @@ export default function Login() {
     password: "",
   });
   const dispatch = useDispatch();
-  const userDetails = useSelector((state) => state.auth.userDetails);
+  const isUserLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   useEffect(() => {
     const cachedUser = JSON.parse(sessionStorage.getItem("cachedUser"));
 
-    if (userDetails.isLoggedIn || (cachedUser && cachedUser.isLoggedIn)) {
+    if (isUserLoggedIn || (cachedUser)) {
       alert("User is Already Logged In. Redirect you to Home Route!!");
       setTimeout(() => {
         navigateTo("/");
@@ -41,6 +41,7 @@ export default function Login() {
         } else {
           sessionStorage.setItem("cachedUser", JSON.stringify(userObj)); //caching the logged in user details
           dispatch(addDetails(res.data));
+          sessionStorage.removeItem("cachedPosts");//removing the public posts cache
           navigateTo("/");
         }
       })

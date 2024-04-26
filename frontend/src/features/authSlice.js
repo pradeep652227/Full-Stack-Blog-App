@@ -1,6 +1,7 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 const initialState = {
+  isLoggedIn:false,
   userDetails: {},
 };
 
@@ -8,19 +9,14 @@ const authSlice = createSlice({
   name: "userDetails",
   initialState,
   reducers: {
-    toggleIsLogged: (state) => {
-      state.userDetails.isLoggedIn = !state.userDetails.isLoggedIn;
-    },
     addDetails: (state, action) => {
+      state.isLoggedIn=true;
       const obj = action.payload;
       state.userDetails = obj; //immutability is done by redux toolkit in the backend
     },
     clearDetails: (state) => {
-      let user1 = state.userDetails;
-      Object.keys(user1).map((key) => {
-        if (key !== "isLoggedIn") state.userDetails[key] = "";
-      });
-      state.userDetails.isLoggedIn(false);
+      state.isLoggedIn=false;
+      state.userDetails={};
     },
   },
 });

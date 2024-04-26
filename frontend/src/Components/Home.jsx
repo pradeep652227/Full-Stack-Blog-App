@@ -3,12 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { addPosts } from "../features/postsSlice";
+import Button from "./Reusable/Button";
 
 export default function Home() {
   const userDetails = useSelector((state) => state.auth.userDetails);
-  const cachedUser=JSON.parse(sessionStorage.getItem("cachedUser"));
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  // const userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
 
-  const publicPosts = useSelector((state) => state.posts.posts);
+  const serverPosts = useSelector((state) => state.posts.posts);
   const dispatch = useDispatch();
 
   let img_styles = { width: "200px", height: "100px" };
@@ -21,13 +23,16 @@ export default function Home() {
       console.log(cachedPosts);
       dispatch(addPosts(cachedPosts));
     } else {
-      console.log("Else Block")
+      console.log("Else Block");
+      let userId = null;
+      if (isLoggedIn) userId = userDetails.id;
       axios
-        .get("/api/public-posts")
+        .get("/api/posts/" + userId)
         .then((result) => {
-          let posts = result.data.posts;
-          sessionStorage.setItem("cachedPosts", JSON.stringify(posts));
-          dispatch(addPosts(posts));
+          let posts = result.data;
+          console.log(posts);
+          posts && sessionStorage.setItem("cachedPosts", JSON.stringify(posts));
+          posts && dispatch(addPosts(posts));
         })
         .catch((err) => {
           console.log(err);
@@ -38,57 +43,61 @@ export default function Home() {
   return (
     <div className="comfortaa">
       <h1 className="text-3xl py-12 text-center">
-        {(cachedUser?.isLoggedIn)
-          ? `${cachedUser.first_name} is Logged In`
+        {isLoggedIn
+          ? `${userDetails.first_name} is Logged In`
           : "Login to Read Posts!!"}
       </h1>
-      {cachedUser?.isLoggedIn ? (
+      {isLoggedIn ? (
         <>
-          <h1 className="text-xl">Blog Posts by {cachedUser.first_name}:-</h1>
+          <h1 className="text-xl">Blog Posts by {userDetails.first_name}:-</h1>
           <div className="flex flex-wrap justify-between">
-            {cachedUser.posts.map((post) => {
-              return (
-                <div className="public-blog-div" key={post._id}>
-                  <Link
-                    to={`/posts/private/${post._id.slice(5, 10)}${post._id.slice(-5)}`}
-                  >
-                    <img
-                      src={`${post.imgURLPrefix}${post.image}`}
-                      alt="A Blog Post"
-                      style={img_styles}
-                      className={img_classes}
-                    />
-                    <span className="block">{post.title}</span>
-                  </Link>
-                </div>
-              );
+            {serverPosts?.map((post) => {
+              if (post.isPrivate) {
+                return (
+                  <div className="public-blog-div" key={post._id}>
+                    <Link to={`/posts/${post.slug}`}>
+                      <img
+                        src={`${post.imgURLPrefix}${post.image}`}
+                        alt="A Blog Post"
+                        style={img_styles}
+                        className={img_classes}
+                      />
+                      <span className="block">{post.title}</span>
+                    </Link>
+                  </div>
+                );
+              }
             })}
           </div>
         </>
       ) : (
-        ""
+        <div className="flex flex-wrap justify-center">
+          <Link to="/create-post">
+            <Button className={``}>Create Public Post</Button>
+          </Link>{" "}
+        </div>
       )}
-      {/* {publicPosts.length && (
+      {/* {serverPosts.length && (
         <h1 className="text-xl mb-2">Some of the Public Blog Posts:-</h1>
       )} */}
-      {publicPosts.length && (
-        <h1 className="text-xl mt-6">Public Posts:-</h1>
-      )}
+      {serverPosts && <h1 className="text-xl mt-6">Public Posts:-</h1>}
       <div className="flex flex-wrap justify-between">
-        {publicPosts.map((post) => {
-          return (
-            <div className="public-blog-div" key={post._id}>
-              <Link to={`/posts/public/${post._id.slice(5, 10)}${post._id.slice(-5)}`}>
-                <img
-                  src={`${post.imgURLPrefix}${post.image}`}
-                  alt="A Blog Post"
-                  style={img_styles}
-                  className={img_classes}
-                />
-                <span className="block">{post.title}</span>
-              </Link>
-            </div>
-          );
+        {serverPosts?.map((post) => {
+          if (!post.isPrivate) {
+            return (
+              <div className="public-blog-div" key={post._id}>
+                <Link to={`/posts/${post.slug}`}>
+                  <img
+                    src={`${post.imgURLPrefix}${post.image}`}
+                    alt="A Blog Post"
+                    style={img_styles}
+                    className={img_classes}
+                  />
+                  <span className="block">{post.title}</span>
+                </Link>
+              </div>
+            );
+          }
         })}
       </div>
     </div>

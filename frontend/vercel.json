@@ -13,7 +13,7 @@
         "destination": "https://blog-app-backend-tau.vercel.app/api/public-posts"
       },
       {
-        "source": "/create-post-server",
+        "source": "/server-create-post",
         "destination": "https://blog-app-backend-tau.vercel.app/create-post-server"
       }
     ]

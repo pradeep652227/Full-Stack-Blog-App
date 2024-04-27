@@ -9,8 +9,8 @@
         "destination": "https://blog-app-backend-navy-beta.vercel.app/post-login"
       },
       {
-        "source": "/api/public-posts",
-        "destination": "https://blog-app-backend-navy-beta.vercel.app/api/public-posts"
+        "source": "/api/posts",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/api/posts"
       },
       {
         "source": "/server-create-post",

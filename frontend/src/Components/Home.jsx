@@ -29,6 +29,7 @@ export default function Home() {
       axios
         .get("/api/posts/" + userId)
         .then((result) => {
+          window.alert("Called Backend!!");
           let posts = result.data;
           console.log(posts);
           posts && sessionStorage.setItem("cachedPosts", JSON.stringify(posts));

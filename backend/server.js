@@ -10,7 +10,7 @@ import fs from "fs";
 // Multer configuration for handling file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Destination folder for storing uploaded files
+    cb(null, "/uploads/"); // Destination folder for storing uploaded files
   },
   filename: function (req, file, cb) {
     const fileName = file.originalname.toLowerCase().split(" ").join("-");

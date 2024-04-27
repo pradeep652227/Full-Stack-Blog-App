@@ -1,5 +1,5 @@
 {
-    "routes": [
+    "rewrites": [
       {
         "src": "/post-signup",
         "dest": "https://blog-app-backend-navy-beta.vercel.app/post-signup"
@@ -9,8 +9,8 @@
         "dest": "https://blog-app-backend-navy-beta.vercel.app/post-login"
       },
       {
-        "src": "/api/posts",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app/api/posts"
+        "src": "/api/posts/",
+        "dest": "https://blog-app-backend-navy-beta.vercel.app/api/posts/"
       },
       {
         "src": "/server-create-post",

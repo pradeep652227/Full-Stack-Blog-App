@@ -14,7 +14,19 @@
       },
       {
         "source": "/server-create-post",
-        "destination": "https://blog-app-backend-navy-beta.vercel.app/create-post-server"
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/server-create-post"
+      },
+      {
+        "source": "/update-post",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/update-post"
+      },
+      {
+        "source": "/api/delete-post/",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/api/delete-post/"
+      },
+      {
+        "source": "/api/delete-image/",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app//api/delete-image/"
       }
     ]
   }

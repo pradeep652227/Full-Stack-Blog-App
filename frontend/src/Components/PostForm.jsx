@@ -86,7 +86,7 @@ export default function PostForm({ post }) {
         .catch((err) => {
           console.log("Error in Creating post:-");
           console.log(err);
-          window.alert("Error in Updating the Post");
+          window.alert("Error in Creating the Post");
         });
     }
     sessionStorage.removeItem("cachedPosts"); //clear the session cache

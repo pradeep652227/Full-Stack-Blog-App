@@ -286,6 +286,7 @@ app.get("/api/posts/:userId", (req, res) => {
     });
 });
 
+
 app.get("/",(req,res)=>{
   res.send("Hi and TESTING="+process.env.TESTING);
 })

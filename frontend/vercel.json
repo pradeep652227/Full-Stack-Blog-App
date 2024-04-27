@@ -1,5 +1,5 @@
 {
-    "rewrites": [
+    "routes": [
       {
         "source": "/post-signup",
         "destination": "https://blog-app-backend-navy-beta.vercel.app/post-signup"

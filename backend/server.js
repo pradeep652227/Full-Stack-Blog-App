@@ -287,7 +287,7 @@ app.get("/api/posts/:userId", (req, res) => {
 });
 
 app.get("/",(req,res)=>{
-  res.send(process.env.TESTING);
+  res.send("Hi and TESTING="+process.env.TESTING);
 })
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

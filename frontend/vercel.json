@@ -1,32 +1,32 @@
 {
     "rewrites": [
       {
-        "src": "/post-signup",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app/post-signup"
+        "source": "/post-signup",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/post-signup"
       },
       {
-        "src": "/post-login",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app/post-login"
+        "source": "/post-login",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/post-login"
       },
       {
-        "src": "/api/posts/",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app/api/posts/"
+        "source": "/api/posts/",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/api/posts/"
       },
       {
-        "src": "/server-create-post",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app/server-create-post"
+        "source": "/server-create-post",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/server-create-post"
       },
       {
-        "src": "/update-post",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app/update-post"
+        "source": "/update-post",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/update-post"
       },
       {
-        "src": "/api/delete-post/",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app/api/delete-post/"
+        "source": "/api/delete-post/",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app/api/delete-post/"
       },
       {
-        "src": "/api/delete-image/",
-        "dest": "https://blog-app-backend-navy-beta.vercel.app//api/delete-image/"
+        "source": "/api/delete-image/",
+        "destination": "https://blog-app-backend-navy-beta.vercel.app//api/delete-image/"
       }
     ]
   }

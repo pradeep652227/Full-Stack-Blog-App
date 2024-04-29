@@ -35,14 +35,8 @@ export class Upload {
     }
   }
 
-   getImagePreview(imageId){
-    try {
-     return this.storage.getFilePreview(BUCKET_ID,imageId);
-        
-    } catch (error) {
-        console.log('Error in GetImagePreview');
-        throw error;
-    }   
+  getImagePreview(imageId) {
+    return this.storage.getFilePreview(BUCKET_ID, imageId);
   }
   async deleteImage(imageId) {
     try {
@@ -56,5 +50,5 @@ export class Upload {
   }
 }
 
-const upload=new Upload();
+const upload = new Upload();
 export default upload;

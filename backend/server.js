@@ -12,7 +12,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
 
-
 app.use(express.urlencoded({ extended: true })); //body-parser enabled
 app.use(express.json()); //parsing JSON (stringified) objects in the request bodies
 
@@ -23,41 +22,18 @@ app.post("/update-post", (req, res) => {
   const postObj = { ...req.body };
   console.log(postObj);
 
-/*  if (req.body.image !== "undefined") {
-    //delete the old image
-    const oldImage = postObj.oldImage;
-    const imagePath = "./uploads/" + oldImage;
-
-  }
-  let updatedFields = {
-    title: req.body.title,
-    slug: req.body.slug,
-    content: req.body.content,
-    isPrivate: req.body.isPrivate,
-  };
-  if (req.body.image !== "undefined") {
-    updatedFields["image"] = req.file.filename;
-  }
-
-  //Update the document
-  console.log(updatedFields);
   blogPost
-    .updateOne(
-      { _id: postObj.postId },
-      {
-        $set: updatedFields,
-      },
-      { new: true }
-    )
-    .then((newPost) => {
-      console.log(newPost);
+    .updateOne({ _id: postObj.postId }, { $set: postObj })
+    .then((result) => {
+      console.log("Post Updated with result:-");
+      console.log(result);
       res.send(true);
     })
     .catch((err) => {
-      console.log("Error in Updating Post");
+      console.log("Error in Post Update");
       console.log(err);
       res.send(false);
-    });*/
+    });
 });
 
 app.post("/server-create-post", (req, res) => {
@@ -67,7 +43,7 @@ app.post("/server-create-post", (req, res) => {
   let post = {
     //creating a post object
     ...postData,
-    imgURLPrefix:"",
+    imgURLPrefix: "",
   };
   if (post.userId) {
     //save the post to the user
@@ -189,53 +165,44 @@ app.get("/api/delete-post/:postId", (req, res) => {
   console.log("Delete Post Route with postId:-" + postId);
   let userId = 0;
 
-  //delete the file first
+  //file deleted from appwrite
+  
   blogPost
     .findOne({ _id: postId })
     .then((post) => {
-      let imagePath = "./uploads/" + post.image;
-      userId = post.userId;
-
-      fs.unlink(imagePath, (err) => {
-        //delete the file
-        if (err) {
-          console.log("Error in Deleting the Image");
-          console.log(err);
-        } else console.log("image deleted");
-        //delete the post
-        let isPrivate = post.isPrivate;
-        console.log("isPrivate= " + isPrivate);
-        if (!isPrivate) {
-          //public post
-          blogPost
-            .deleteOne({ _id: postId })
-            .then(() => res.send(true))
-            .catch((err) => {
-              console.log("error in deleting the PUBLIC POST");
-              console.log(err);
-              res.status(500).send(false);
-            });
-        } else {
-          //privae post
-          blogPost
-            .deleteOne({ _id: postId })
-            .then(() => {
-              // After deleting the post from the blog collection, remove its reference from the user collection
-              return blogUser.updateMany(
-                { posts: postId },
-                { $pull: { posts: postId } }
-              );
-            })
-            .then(() => {
-              console.log("Post deleted from both collections.");
-              res.send(true);
-            })
-            .catch((err) => {
-              console.error("Error deleting post:", err);
-              res.status(500).send(false);
-            });
-        }
-      });
+      //delete the post
+      let isPrivate = post.isPrivate;
+      console.log("isPrivate= " + isPrivate);
+      if (!isPrivate) {
+        //public post
+        blogPost
+          .deleteOne({ _id: postId })
+          .then(() => res.send(true))
+          .catch((err) => {
+            console.log("error in deleting the PUBLIC POST");
+            console.log(err);
+            res.status(500).send(false);
+          });
+      } else {
+        //privae post
+        blogPost
+          .deleteOne({ _id: postId })
+          .then(() => {
+            // After deleting the post from the blog collection, remove its reference from the user collection
+            return blogUser.updateMany(
+              { posts: postId },
+              { $pull: { posts: postId } }
+            );
+          })
+          .then(() => {
+            console.log("Post deleted from both collections.");
+            res.send(true);
+          })
+          .catch((err) => {
+            console.error("Error deleting post:", err);
+            res.status(500).send(false);
+          });
+      }
     })
     .catch((err) => {
       //last catch
@@ -262,10 +229,9 @@ app.get("/api/posts/:userId", (req, res) => {
     });
 });
 
-
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   res.send("Hi");
-})
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -16,6 +16,7 @@ export default function BlogPostPublic() {
     content: "",
     image: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const userDetails = useSelector((state) => state.auth.userDetails);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -30,9 +31,7 @@ export default function BlogPostPublic() {
       //for the 2nd run of useEffect and we'll find our data in the cached version == eliminating 2nd call to the server (redundant).
       console.log("Cached Block!!");
       dispatch(addPosts(cachedPosts));
-      post = cachedPosts.find(
-        (post) => (post.slug === slug)
-      );
+      post = cachedPosts.find((post) => post.slug === slug);
       if (post) {
         setPagePost(post);
       } else {
@@ -52,9 +51,7 @@ export default function BlogPostPublic() {
           console.log(posts);
           posts && sessionStorage.setItem("cachedPosts", JSON.stringify(posts));
           posts && dispatch(addPosts(posts)); //dispatch action state update takes time
-          post = posts.find(
-            (post) => post.slug === slug
-          );
+          post = posts.find((post) => post.slug === slug);
           if (post) {
             setPagePost(post);
           } else {
@@ -69,43 +66,59 @@ export default function BlogPostPublic() {
   }, []);
 
   return (
-    <div className="blog-post-div">
-      <h1 className="text-3xl text-center py-3">{pagePost.title}</h1>
-      <h2 className="text-2xl text-right pb-6">By {pagePost.userName}</h2>
-      <div>
-        <div className="relative">
-          <img
-            className="rounded-md w-9/12 mx-auto"
-            src={upload.getImagePreview(pagePost.image)}
-            alt={"A Blog Post with Title= " + pagePost.title}
-          />
-          <div className="buttons absolute top-6 right-6">
-            <Link to={`/edit-post/${pagePost.slug}`}>
-              <Button className="bg-green-500">Edit</Button>
-            </Link>
-            <Button onClick={handleDeletePost} className="bg-red-500 cursor-pointer">
-              Delete
-            </Button>
+    <>
+      {isLoading ? (
+        <div className="flex flex-wrap justify-center items-center py-32 flex-col space-y-8">
+          <h1 className="text-3xl ">Form Submission in Progress...</h1>
+          <h1 className="text-3xl ">Wait For Sometime!!</h1>
+        </div>
+      ) : (
+        <div className="blog-post-div">
+          <h1 className="text-3xl text-center py-3">{pagePost.title}</h1>
+          <h2 className="text-2xl text-right pb-6">By {pagePost.userName}</h2>
+          <div>
+            <div className="relative">
+              <img
+                className="rounded-md w-9/12 mx-auto"
+                src={upload.getImagePreview(pagePost.image,{width:0,height:0})}
+                alt={"A Blog Post with Title= " + pagePost.title}
+              />
+              <div className="buttons absolute top-6 right-6">
+                <Link to={`/edit-post/${pagePost.slug}`}>
+                  <Button className="bg-green-500">Edit</Button>
+                </Link>
+                <Button
+                  onClick={handleDeletePost}
+                  className="bg-red-500 cursor-pointer"
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+
+            <p className="p-2">{parse(pagePost.content)}</p>
           </div>
         </div>
-
-        <p className="p-2">{parse(pagePost.content)}</p>
-      </div>
-    </div>
+      )}
+    </>
   );
-/*Return Statement Ends*/
+  /*Return Statement Ends*/
   function handleDeletePost() {
+    setIsLoading(true);
     axios
       .get(`/api/delete-post/${pagePost._id}`)
       .then((res) => {
         console.log("Handle Delete Function");
         sessionStorage.removeItem("cachedPosts");
         dispatch(clearPosts());
-        navigateTo("/");
+        upload.deleteImage(pagePost.image);
       })
       .catch((err) => {
         console.log("Error in Handle Delete Function");
         console.log(err);
       });
+
+    setIsLoading(false);
+    navigateTo("/");
   }
 }

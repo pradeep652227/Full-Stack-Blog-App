@@ -13,6 +13,7 @@ export default function LogoutBtn(){
         dispatch(clearPrivatePosts());
         sessionStorage.removeItem("cachedUser");
         navigateTo("/");
+        location.reload();
     }   
     return(
             <button className='px-6 py-2 duration-200 hover:bg-blue-100 rounded-full' onClick={logoutBtnHandler} >

@@ -35,8 +35,8 @@ export class Upload {
     }
   }
 
-  getImagePreview(imageId) {
-    return this.storage.getFilePreview(BUCKET_ID, imageId);
+  getImagePreview(imageId, queries={width:200,height:100}) {
+    return this.storage.getFilePreview(BUCKET_ID, imageId,queries.width,queries.height);
   }
   async deleteImage(imageId) {
     try {

@@ -15,6 +15,7 @@ export default function Home() {
   const dispatch = useDispatch();
 
   let img_styles = { width: "200px", height: "100px" };
+  // let img_styles = {};
   let img_classes = "rounded-md";
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function Home() {
                   <div className="public-blog-div" key={post._id}>
                     <Link to={`/posts/${post.slug}`}>
                       <img
-                        src={upload.getImagePreview(post.image)}
+                        src={upload.getImagePreview(post.image,{width:0,height:0})}
                         alt="A Blog Post"
                         style={img_styles}
                         className={img_classes}
@@ -89,7 +90,7 @@ export default function Home() {
               <div className="public-blog-div" key={post._id}>
                 <Link to={`/posts/${post.slug}`}>
                   <img
-                    src={upload.getImagePreview(post.image)}
+                    src={upload.getImagePreview(post.image,{width:0,height:0})}
                     alt="A Blog Post"
                     style={img_styles}
                     className={img_classes}

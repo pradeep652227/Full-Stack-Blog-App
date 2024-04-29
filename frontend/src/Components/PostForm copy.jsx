@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { clearPosts } from "../features/postsSlice";
 import axios from "axios";
-import upload from "../services/upload";
 
 export default function PostForm({ post }) {
   const navigateTo = useNavigate();
@@ -32,22 +31,24 @@ export default function PostForm({ post }) {
       .replace(/[^a-zA-Z\d]+/g, "-");
   }, []);
 
-  const submitForm = async (postData) => {
+  const submitForm = (postData) => {
     let formData = new FormData();
-    const randomNumber = Math.floor(Math.random() * 10000);
-    const slug = postData.slug + "-" + randomNumber;
-    const imageId = await upload.uploadImage(postData.image[0]);
-    let sendData = {
-      title: postData.title,
-      slug: slug,
-      image: imageId,
-      content: postData.content,
-      isPrivate: isLoggedIn ? postData.status === "Private" : "false",
-    };
+    const randomNumber=Math.floor(Math.random()*10000);
+    const slug=postData.slug+"-"+randomNumber;
+    formData.append("title", postData.title);
+    formData.append("slug", slug);
+    formData.append("image", postData.image[0]);
+
+    formData.append("content", postData.content);
+    formData.append(
+      "isPrivate",
+      isLoggedIn ? postData.status === "Private" : "false"
+    ); //if logged then status else public post
+
     if (post) {
       //update the post
-      sendData["postId"] = post._id;
-      sendData["oldImage"] = post.image;
+      formData.append("postId", post._id);
+      formData.append("oldImage", post.image);
       axios
         .post("/update-post", formData, {
           headers: {
@@ -65,12 +66,19 @@ export default function PostForm({ post }) {
         });
     } else {
       //create a new post
-      sendData["userId"] = isLoggedIn ? userDetails.id : "";
-      sendData["userName"] = isLoggedIn
-        ? userDetails.first_name + " " + userDetails.last_name
-        : "Anonymous";
+      formData.append("userId", isLoggedIn ? userDetails.id : "");
+      formData.append(
+        "userName",
+        isLoggedIn
+          ? userDetails.first_name + " " + userDetails.last_name
+          : "Anonymous"
+      );
       axios
-        .post("/server-create-post", sendData)
+        .post("/server-create-post", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res) => {
           console.log(res);
           window.alert(res.data);
@@ -78,7 +86,7 @@ export default function PostForm({ post }) {
         .catch((err) => {
           console.log("Error in Creating post:-");
           console.log(err);
-          window.alert("Error in Creating the Post");
+          window.alert("Error in Updating the Post");
         });
     }
     sessionStorage.removeItem("cachedPosts"); //clear the session cache
@@ -99,6 +107,7 @@ export default function PostForm({ post }) {
       onSubmit={handleSubmit(submitForm)}
       className="flex flex-wrap gap-x-2 px-2 py-2"
       method="POST"
+      encType="multipart/form-data"
     >
       <div className="w-4/6">
         <Input
@@ -138,9 +147,11 @@ export default function PostForm({ post }) {
           accept="image/jpg image/png image/jpeg"
           className="mb-4"
           {...register("image", { required: post ? false : true })}
-          onChange={(e) => {
-            console.log(e.currentTarget.files[0].name);
-          }}
+          onChange={
+            (e)=>{
+             console.log(e.currentTarget.files[0].name);
+            }
+          }
         />
         {isLoggedIn && (
           <Select

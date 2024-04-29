@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { addPosts } from "../features/postsSlice";
 import Button from "./Reusable/Button";
+import upload from "../services/upload";
 
 export default function Home() {
   const userDetails = useSelector((state) => state.auth.userDetails);
@@ -57,7 +58,7 @@ export default function Home() {
                   <div className="public-blog-div" key={post._id}>
                     <Link to={`/posts/${post.slug}`}>
                       <img
-                        src={`${post.imgURLPrefix}${post.image}`}
+                        src={upload.getImagePreview(post.image)}
                         alt="A Blog Post"
                         style={img_styles}
                         className={img_classes}
@@ -88,7 +89,7 @@ export default function Home() {
               <div className="public-blog-div" key={post._id}>
                 <Link to={`/posts/${post.slug}`}>
                   <img
-                    src={`${post.imgURLPrefix}${post.image}`}
+                    src={upload.getImagePreview(post.image)}
                     alt="A Blog Post"
                     style={img_styles}
                     className={img_classes}

@@ -6,52 +6,28 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import generateUniqueID from "./modules/generateUniqueID.js";
 import fs from "fs";
-
-// Multer configuration for handling file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // Destination folder for storing uploaded files
-    // cb(null, "/uploads/"); 
-    // cb(null, process.cwd() + '/uploads'); 
-     cb(null, __dirname+"/uploads"); 
-  },
-  filename: function (req, file, cb) {
-    const fileName = file.originalname.toLowerCase().split(" ").join("-");
-    cb(null, Date.now() + "-" + fileName); // Unique filename for each uploaded file
-  },
-});
-
-// Initialize Multer with the storage configuration
-const upload = multer({ storage: storage });
+import cloudinary from "./modules/cloudinary.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
 
-// Serve static files from the 'uploads' folder
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); //will now serve all the images as static files on the routes of '/uploads'
+
 app.use(express.urlencoded({ extended: true })); //body-parser enabled
 app.use(express.json()); //parsing JSON (stringified) objects in the request bodies
 
 /*POST requests*/
 
-app.post("/update-post", upload.single("image"), (req, res) => {
+app.post("/update-post", (req, res) => {
   console.log("upload Post:-");
   const postObj = { ...req.body };
   console.log(postObj);
 
-  if (req.body.image !== "undefined") {
+/*  if (req.body.image !== "undefined") {
     //delete the old image
     const oldImage = postObj.oldImage;
     const imagePath = "./uploads/" + oldImage;
-    fs.unlink(imagePath, (err) => {
-      if (err) {
-        console.log("Error in deleting the old image");
-        console.log(err);
-      } else console.log("Deleted the old Image");
-    });
+
   }
   let updatedFields = {
     title: req.body.title,
@@ -81,21 +57,18 @@ app.post("/update-post", upload.single("image"), (req, res) => {
       console.log("Error in Updating Post");
       console.log(err);
       res.send(false);
-    });
+    });*/
 });
-app.post("/server-create-post", upload.single("image"), (req, res) => {
-  //adding a blog-post
-  //upload.single(name attribute)
-  let url = req.protocol + "://" + req.get("host");
-  url += "/uploads/";
+
+app.post("/server-create-post", (req, res) => {
+  console.log(req.body);
+
   let postData = req.body;
   let post = {
     //creating a post object
     ...postData,
-    image: req.file.filename,
-    imgURLPrefix: url,
+    imgURLPrefix:"",
   };
-  console.log(post);
   if (post.userId) {
     //save the post to the user
     console.log("Inside true block");

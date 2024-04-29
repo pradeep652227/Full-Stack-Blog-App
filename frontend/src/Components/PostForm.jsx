@@ -16,6 +16,28 @@ export default function PostForm({ post }) {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    let flag = 0;
+    if (post) {
+      console.log('1st block')
+      if (!isLoggedIn) {
+        console.log('2nd If');
+        //if user is not logged in
+        if (post.userName !== "Anonymous") {
+          console.log('3rd If and username='+post?.userName);
+          //The post is created by a user 
+          flag = 1;
+        }
+      } else if (userDetails?.id !== post.userId){flag = 1; console.log('else if')}
+
+      if (flag) {
+        window.alert("You are not The User to Edit this Post!!");
+        setTimeout(() => navigateTo("/"), 1000);
+      }
+    }
+    
+  }, [isLoggedIn, post]);
+
   const { register, handleSubmit, watch, control, setValue, getValues } =
     useForm({
       defaultValues: {
@@ -37,7 +59,7 @@ export default function PostForm({ post }) {
     setIsLoading(true);
     const randomNumber = Math.floor(Math.random() * 10000);
     const slug = postData.slug + "-" + randomNumber;
-     
+
     let sendData = {
       title: postData.title,
       slug: slug,
@@ -50,14 +72,13 @@ export default function PostForm({ post }) {
       if (postData.image[0]) {
         upload.deleteImage(post.image);
         window.alert("Deleted The Old Image");
-        sendData["image"]=await upload.uploadImage(postData.image[0]);//required->false in case of updating
+        sendData["image"] = await upload.uploadImage(postData.image[0]); //required->false in case of updating
       }
       sendData["postId"] = post._id;
       axios
         .post("/update-post", sendData)
         .then((result) => {
           console.log("Result of updating post is:-");
-
         })
         .catch((err) => {
           console.log("Error in Updating post:-");
@@ -66,15 +87,14 @@ export default function PostForm({ post }) {
         });
     } else {
       //create a new post
-      sendData["image"]=await upload.uploadImage(postData.image[0]);
+      sendData["image"] = await upload.uploadImage(postData.image[0]);
       sendData["userId"] = isLoggedIn ? userDetails.id : "";
       sendData["userName"] = isLoggedIn
-        ? userDetails.first_name + " " + userDetails.last_name
+        ? (userDetails.first_name + " " + userDetails.last_name)
         : "Anonymous";
       axios
         .post("/server-create-post", sendData)
         .then((res) => {
-  
           window.alert(res.data);
         })
         .catch((err) => {
@@ -100,12 +120,10 @@ export default function PostForm({ post }) {
   return (
     <>
       {isLoading ? (
-
-          <div className="flex flex-wrap justify-center items-center py-32 flex-col space-y-8">
-            <h1 className="text-3xl ">Form Submission in Progress...</h1>
-            <h1 className="text-3xl ">Wait For Sometime!!</h1>
-          </div>
-
+        <div className="flex flex-wrap justify-center items-center py-32 flex-col space-y-8">
+          <h1 className="text-3xl ">Form Submission in Progress...</h1>
+          <h1 className="text-3xl ">Wait For Sometime!!</h1>
+        </div>
       ) : (
         <form
           onSubmit={handleSubmit(submitForm)}

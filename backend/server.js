@@ -166,43 +166,29 @@ app.get("/api/delete-post/:postId", (req, res) => {
   let userId = 0;
 
   //file deleted from appwrite
-  
+
   blogPost
     .findOne({ _id: postId })
     .then((post) => {
       //delete the post
-      let isPrivate = post.isPrivate;
-      console.log("isPrivate= " + isPrivate);
-      if (!isPrivate) {
-        //public post
-        blogPost
-          .deleteOne({ _id: postId })
-          .then(() => res.send(true))
-          .catch((err) => {
-            console.log("error in deleting the PUBLIC POST");
-            console.log(err);
-            res.status(500).send(false);
-          });
-      } else {
-        //privae post
-        blogPost
-          .deleteOne({ _id: postId })
-          .then(() => {
-            // After deleting the post from the blog collection, remove its reference from the user collection
-            return blogUser.updateMany(
-              { posts: postId },
-              { $pull: { posts: postId } }
-            );
-          })
-          .then(() => {
-            console.log("Post deleted from both collections.");
-            res.send(true);
-          })
-          .catch((err) => {
-            console.error("Error deleting post:", err);
-            res.status(500).send(false);
-          });
-      }
+      blogPost
+        .deleteOne({ _id: postId })
+        .then((result) => {
+          if (post.user !== "") {
+            //delete reference from user also
+            blogUser
+              .updateMany({ posts: postId }, { $pull: { posts: postId } })
+              .then(() => res.send(true))
+              .catch((err) => {
+                console.log("Error in Deleting Reference from User");
+                console.log(err);
+              });
+          }
+        })
+        .catch((err) => {
+          console.log("Error in Deleting Post");
+          console.log(err);
+        });
     })
     .catch((err) => {
       //last catch

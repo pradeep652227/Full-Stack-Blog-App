@@ -59,7 +59,9 @@ export default function BlogPostPublic() {
           }
         })
         .catch((err) => {
-          window.alert('Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!');
+          window.alert(
+            "Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!"
+          );
         });
     }
   }, []);
@@ -79,7 +81,10 @@ export default function BlogPostPublic() {
             <div className="relative">
               <img
                 className="rounded-md w-9/12 mx-auto"
-                src={upload.getImagePreview(pagePost.image,{width:0,height:0})}
+                src={upload.getImagePreview(pagePost.image, {
+                  width: 0,
+                  height: 0,
+                })}
                 alt={"A Blog Post with Title= " + pagePost.title}
               />
               <div className="buttons absolute top-6 right-6">
@@ -103,6 +108,28 @@ export default function BlogPostPublic() {
   );
   /*Return Statement Ends*/
   function handleDeletePost() {
+    let flag = 0;
+    if (pagePost) {
+      console.log("1st block");
+      if (!isLoggedIn) {
+        console.log("2nd If");
+        //if user is not logged in
+        if (pagePost.userName !== "Anonymous") {
+          console.log("3rd If and username=" + pagePost?.userName);
+          //The post is created by a user
+          flag = 1;
+        }
+      } else if (userDetails?.id !== pagePost.userId) {
+        flag = 1;
+        console.log("else if");
+      }
+
+      if (flag) {
+        window.alert("You are not The User to Delete this Post!!");
+        setTimeout(() => navigateTo("/"), 1000);
+      }
+    }
+
     setIsLoading(true);
     axios
       .get(`/api/delete-post/${pagePost._id}`)
@@ -114,8 +141,9 @@ export default function BlogPostPublic() {
       })
       .catch((err) => {
         console.log("Error in Handle Delete Function");
-        window.alert('Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!');
-
+        window.alert(
+          "Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!"
+        );
       });
 
     setIsLoading(false);

@@ -127,7 +127,7 @@ export default function PostForm({ post }) {
       <div className="w-1/6">
         {post && (
           <img
-            src={`${post?.imgURLPrefix}${post?.image}`}
+            src={upload.getImagePreview(post.image)}
             alt={`Image of Blog Post with Title ${post?.title}`}
             className="rounded-xl"
           />

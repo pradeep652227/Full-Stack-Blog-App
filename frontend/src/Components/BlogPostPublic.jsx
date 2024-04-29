@@ -7,7 +7,7 @@ import Button from "./Reusable/Button";
 import { Link } from "react-router-dom";
 import { clearPosts } from "../features/postsSlice";
 import parse from "html-react-parser";
-
+import upload from "../services/upload";
 
 export default function BlogPostPublic() {
   const { slug } = useParams();
@@ -76,7 +76,7 @@ export default function BlogPostPublic() {
         <div className="relative">
           <img
             className="rounded-md w-9/12 mx-auto"
-            src={`${pagePost.imgURLPrefix}${pagePost.image}`}
+            src={upload.getImagePreview(pagePost.image)}
             alt={"A Blog Post with Title= " + pagePost.title}
           />
           <div className="buttons absolute top-6 right-6">

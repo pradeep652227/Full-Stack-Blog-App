@@ -15,7 +15,7 @@ export default function EditPost() {
         dispatch(addPosts(cachedPosts));
         postFound = cachedPosts.find((post) => post.slug === slug);
         postFound && setPost(postFound);
-        console.log(cachedPosts);
+        
       }
   }, [slug]);
 

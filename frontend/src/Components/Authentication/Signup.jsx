@@ -48,7 +48,7 @@ export default function SignUp() {
       .post("/post-signup", formData)
       .then((res) => {
         console.log("User Registererd with details:-");
-        console.log(res);
+
         res && sessionStorage.setItem("cachedUser",JSON.stringify(res.data));//caching the userdetails
         dispatch(addDetails(res.data));
         sessionStorage.removeItem("cachedPosts");//removing the public posts cache
@@ -57,10 +57,8 @@ export default function SignUp() {
       })
       .catch((err) => {
         window.alert(`Error(s):-\n${err.response.data.message}`);
-        console.log(
-          `Error Status= ${err.status} | Error Message= ${err.response.data.message}`
-        );
-        console.log(err);
+        window.alert('Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!');
+
       });
   }
   return (

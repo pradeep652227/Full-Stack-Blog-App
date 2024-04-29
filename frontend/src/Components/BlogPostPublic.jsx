@@ -48,7 +48,6 @@ export default function BlogPostPublic() {
         .then((result) => {
           console.log("Else Block");
           let posts = result.data;
-          console.log(posts);
           posts && sessionStorage.setItem("cachedPosts", JSON.stringify(posts));
           posts && dispatch(addPosts(posts)); //dispatch action state update takes time
           post = posts.find((post) => post.slug === slug);
@@ -60,7 +59,7 @@ export default function BlogPostPublic() {
           }
         })
         .catch((err) => {
-          console.log(err);
+          window.alert('Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!');
         });
     }
   }, []);
@@ -115,7 +114,8 @@ export default function BlogPostPublic() {
       })
       .catch((err) => {
         console.log("Error in Handle Delete Function");
-        console.log(err);
+        window.alert('Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!');
+
       });
 
     setIsLoading(false);

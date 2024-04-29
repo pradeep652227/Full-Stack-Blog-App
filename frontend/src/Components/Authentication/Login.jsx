@@ -34,7 +34,7 @@ export default function Login() {
       .post("/post-login", loginData)
       .then((res) => {
         console.log("Got the User Details from Server");
-        console.log(res);       
+        
         let userObj = res.data;
         if (!userObj) {
           window.alert("Either email or password is wrong!!");
@@ -48,7 +48,6 @@ export default function Login() {
       .catch((err) => {
         // window.alert(err.response.data.message);
         window.alert(err.response.data.message);
-        console.log(err);
       });
   }
   let input_classes = "block border-2 rounded-md p-2 text-lg w-full";

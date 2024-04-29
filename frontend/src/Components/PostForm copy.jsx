@@ -57,11 +57,9 @@ export default function PostForm({ post }) {
         })
         .then((result) => {
           console.log("Result of updating post is:-");
-          console.log(result);
         })
         .catch((err) => {
           console.log("Error in Updating post:-");
-          console.log(err);
           window.alert("Error in Updating the Post");
         });
     } else {
@@ -80,12 +78,12 @@ export default function PostForm({ post }) {
           },
         })
         .then((res) => {
-          console.log(res);
+      
           window.alert(res.data);
         })
         .catch((err) => {
           console.log("Error in Creating post:-");
-          console.log(err);
+    
           window.alert("Error in Updating the Post");
         });
     }

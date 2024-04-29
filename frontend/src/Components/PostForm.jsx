@@ -57,11 +57,11 @@ export default function PostForm({ post }) {
         .post("/update-post", sendData)
         .then((result) => {
           console.log("Result of updating post is:-");
-          console.log(result);
+
         })
         .catch((err) => {
           console.log("Error in Updating post:-");
-          console.log(err);
+
           window.alert("Error in Updating the Post");
         });
     } else {
@@ -74,12 +74,12 @@ export default function PostForm({ post }) {
       axios
         .post("/server-create-post", sendData)
         .then((res) => {
-          console.log(res);
+  
           window.alert(res.data);
         })
         .catch((err) => {
           console.log("Error in Creating post:-");
-          console.log(err);
+
           window.alert("Error in Creating the Post");
         });
     }
@@ -150,9 +150,6 @@ export default function PostForm({ post }) {
               accept="image/jpg image/png image/jpeg"
               className="mb-4"
               {...register("image", { required: post ? false : true })}
-              onChange={(e) => {
-                console.log(e.currentTarget.files[0].name);
-              }}
             />
             {isLoggedIn && (
               <Select

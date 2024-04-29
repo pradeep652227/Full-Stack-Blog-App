@@ -22,7 +22,6 @@ export default function Home() {
     const cachedPosts = JSON.parse(sessionStorage.getItem("cachedPosts"));
     if (cachedPosts) {
       console.log("Cached Block");
-      console.log(cachedPosts);
       dispatch(addPosts(cachedPosts));
     } else {
       console.log("Else Block");
@@ -32,12 +31,12 @@ export default function Home() {
         .get("/api/posts/" + userId)
         .then((result) => {
           let posts = result.data;
-          console.log(posts);
+        
           posts && sessionStorage.setItem("cachedPosts", JSON.stringify(posts));
           posts && dispatch(addPosts(posts));
         })
         .catch((err) => {
-          console.log(err);
+          window.alert('Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!');
         });
     }
   }, []); // Empty dependency array to run the effect only once

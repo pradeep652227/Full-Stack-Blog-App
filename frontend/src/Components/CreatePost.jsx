@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { clearPosts } from "../features/postsSlice";
 
 export default function CreatePost() {
@@ -11,9 +11,9 @@ export default function CreatePost() {
     content: "",
   });
   const navigateTo = useNavigate();
-  const isLoggedIn=useSelector(state=>state.auth.isLoggedIn);
-  const userDetails=useSelector(state=>state.auth.userDetails);
-  const dispatch=useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const userDetails = useSelector((state) => state.auth.userDetails);
+  const dispatch = useDispatch();
 
   function handleChange(e) {
     const { name: field, value } = e.target;
@@ -31,10 +31,15 @@ export default function CreatePost() {
     formData.append("title", postData.title);
     formData.append("image", postData.image);
     formData.append("content", postData.content);
-    formData.append("isPrivate", isLoggedIn? "true" : "false"); //if logged then private post else public post
-    formData.append("userId", isLoggedIn? userDetails.id : "");
-    formData.append("userName", isLoggedIn? (userDetails.first_name+" "+userDetails.last_name) : "Anonymous");
-    
+    formData.append("isPrivate", isLoggedIn ? "true" : "false"); //if logged then private post else public post
+    formData.append("userId", isLoggedIn ? userDetails.id : "");
+    formData.append(
+      "userName",
+      isLoggedIn
+        ? userDetails.first_name + " " + userDetails.last_name
+        : "Anonymous"
+    );
+
     axios
       .post("/server-create-post", formData, {
         headers: {
@@ -44,12 +49,16 @@ export default function CreatePost() {
       .then((res) => {
         console.log(res);
         window.alert(res.data);
-        sessionStorage.removeItem("cachedPosts");//clear the session cache
+        sessionStorage.removeItem("cachedPosts"); //clear the session cache
         dispatch(clearPosts());
         navigateTo("/");
         //
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        window.alert(
+          "Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!"
+        )
+      );
   }
   return (
     <div id="create-post-div" className="py-8">

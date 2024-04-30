@@ -109,6 +109,7 @@ export default function BlogPostPublic() {
   /*Return Statement Ends*/
   function handleDeletePost() {
     if(pagePost.userName==="Anonymous"){
+          //public posts can't be deleted!!
       window.alert("Public Posts can only be Deleted by the Dev");
       navigateTo("/");
     }
@@ -134,7 +135,7 @@ export default function BlogPostPublic() {
       }
     }
     if (!flag) {
-      //public posts can't be deleted!!
+  
       setIsLoading(true);
       axios
         .get(`/api/delete-post/${pagePost._id}`)

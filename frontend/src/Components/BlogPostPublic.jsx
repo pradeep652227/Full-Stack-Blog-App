@@ -92,7 +92,16 @@ export default function BlogPostPublic() {
                   <Button className="bg-green-500">Edit</Button>
                 </Link>
                 <Button
-                  onClick={handleDeletePost}
+                  onClick={() => {
+                    if (pagePost.userName === "Anonymous") {
+                      window.alert(
+                        "Public Posts can only be Deleted by the Dev"
+                      );
+                      navigateTo("/");
+                    }else{
+                      return handleDeletePost();
+                    }
+                  }}
                   className="bg-red-500 cursor-pointer"
                 >
                   Delete
@@ -108,11 +117,6 @@ export default function BlogPostPublic() {
   );
   /*Return Statement Ends*/
   function handleDeletePost() {
-    if(pagePost.userName==="Anonymous"){
-          //public posts can't be deleted!!
-      window.alert("Public Posts can only be Deleted by the Dev");
-      navigateTo("/");
-    }
     let flag = 0;
     if (pagePost) {
       console.log("1st block");
@@ -135,7 +139,6 @@ export default function BlogPostPublic() {
       }
     }
     if (!flag) {
-  
       setIsLoading(true);
       axios
         .get(`/api/delete-post/${pagePost._id}`)

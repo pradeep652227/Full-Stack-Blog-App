@@ -129,24 +129,25 @@ export default function BlogPostPublic() {
         setTimeout(() => navigateTo("/"), 1000);
       }
     }
+    if (!flag) {
+      setIsLoading(true);
+      axios
+        .get(`/api/delete-post/${pagePost._id}`)
+        .then((res) => {
+          console.log("Handle Delete Function");
+          sessionStorage.removeItem("cachedPosts");
+          dispatch(clearPosts());
+          upload.deleteImage(pagePost.image);
+        })
+        .catch((err) => {
+          console.log("Error in Handle Delete Function");
+          window.alert(
+            "Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!"
+          );
+        });
 
-    setIsLoading(true);
-    axios
-      .get(`/api/delete-post/${pagePost._id}`)
-      .then((res) => {
-        console.log("Handle Delete Function");
-        sessionStorage.removeItem("cachedPosts");
-        dispatch(clearPosts());
-        upload.deleteImage(pagePost.image);
-      })
-      .catch((err) => {
-        console.log("Error in Handle Delete Function");
-        window.alert(
-          "Error in Connecting to the Server.\nPlease try again Later.\nOr Contac the Developer if the issue persists!!"
-        );
-      });
-
-    setIsLoading(false);
-    navigateTo("/");
+      setIsLoading(false);
+      navigateTo("/");
+    }
   }
 }
